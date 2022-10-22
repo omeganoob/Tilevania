@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _playerMovement;
     private Rigidbody2D _rb;
     private Vector2 _mVelocity = Vector2.zero;
+    [SerializeField] private Transform _gunBarrel;
+    [SerializeField] private GameObject bullet;
     [SerializeField] private LayerMask _platformLayerMask;
     [SerializeField] private LayerMask _ememies;
     [SerializeField] private LayerMask _hazards;
@@ -31,13 +33,12 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _collider2D = GetComponent<CapsuleCollider2D>();
-
         _gravity = _rb.gravityScale;
     }
 
     void Update()
     {
-        if(!isAlive) return;
+        if (!isAlive) return;
         Move();
         Climb();
         //For draw ray gizmo
@@ -93,6 +94,13 @@ public class PlayerMovement : MonoBehaviour
         if (!isAlive) return;
         if (!value.isPressed || !IsGrounded()) return;
         _rb.velocity += Vector2.up * jumpVel;
+    }
+
+    void OnFire(InputValue value)
+    {
+        if(!isAlive) return;
+        if (!value.isPressed) return;
+        Instantiate(bullet, _gunBarrel.position, transform.rotation);
     }
 
     private bool IsGrounded() {
