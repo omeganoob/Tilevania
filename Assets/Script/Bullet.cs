@@ -24,16 +24,20 @@ public class Bullet : MonoBehaviour
         _rb.velocity = new Vector2(1f, 0f) * _direction * _speed * (400 * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(collision.tag.Equals("Enemy"))
+    //    {
+    //        Destroy(collision.gameObject);
+    //    }
+    //    Destroy(gameObject);
+    //}
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.tag.Equals("Enemy"))
+        if (collision.collider.CompareTag("Enemy"))
         {
             Destroy(collision.gameObject);
         }
-        Destroy(gameObject);
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
         Destroy(gameObject);
     }
 }

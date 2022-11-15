@@ -7,10 +7,9 @@ public class EmenyMovement : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private CapsuleCollider2D _capsuleCollider;
     private BoxCollider2D _boxCollider;
-    private bool _facingRight;
+    [SerializeField] private bool _facingRight;
     void Start()
     {
-        _facingRight = true;
         _rigidbody = GetComponent<Rigidbody2D>();
         _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _boxCollider = GetComponent<BoxCollider2D>();
@@ -24,7 +23,6 @@ public class EmenyMovement : MonoBehaviour
     {
         _speed *= -1;
         Flip(_speed);
-        Debug.Log("wall here");
     }
     private void Flip(float hMove)
     {

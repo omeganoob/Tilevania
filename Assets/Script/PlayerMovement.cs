@@ -22,6 +22,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _fallMultiplier = 5f;
     private float _gravity;
     private bool isAlive = true;
+    private float _shootTimer = 0;
+    private bool _canShoot = true;
+    private delegate void OnDead();
+    private OnDead onDead;
+    private GameSession _gameSession;
     #region cached
     private static readonly int IsRunning = Animator.StringToHash("isRunning");
     private static readonly int IsClimbing = Animator.StringToHash("isClimbing");
@@ -34,11 +39,22 @@ public class PlayerMovement : MonoBehaviour
         _animator = GetComponent<Animator>();
         _collider2D = GetComponent<CapsuleCollider2D>();
         _gravity = _rb.gravityScale;
+
+        _gameSession = FindObjectOfType<GameSession>();
+        if(_gameSession)
+        {
+            onDead += _gameSession.OnPlayerDead;
+        }
     }
 
     void Update()
     {
         if (!isAlive) return;
+        _shootTimer -= Time.deltaTime;
+        if(_shootTimer <= 0)
+        {
+            _canShoot = true;
+        }
         Move();
         Climb();
         //For draw ray gizmo
@@ -77,7 +93,6 @@ public class PlayerMovement : MonoBehaviour
         _rb.gravityScale = 0f;
         var velocity = _rb.velocity;
         var targetVelocity = new Vector2(velocity.x, _playerMovement.y * speed * Time.fixedDeltaTime);
-        // _rb.velocity = Vector2.SmoothDamp(velocity, targetVelocity, ref _mVelocity, .1f);
         _rb.velocity = targetVelocity;
         var isClimbing = Mathf.Abs(_playerMovement.y) > Mathf.Epsilon;
         _animator.SetBool(IsClimbing, isClimbing);
@@ -98,9 +113,14 @@ public class PlayerMovement : MonoBehaviour
 
     void OnFire(InputValue value)
     {
-        if(!isAlive) return;
-        if (!value.isPressed) return;
+        if (!isAlive) return;
+        if(!value.isPressed) return;
+        if (!_canShoot) return;
+
         Instantiate(bullet, _gunBarrel.position, transform.rotation);
+        _shootTimer = 0.5f;
+        _canShoot = false;
+        
     }
 
     private bool IsGrounded() {
@@ -138,7 +158,6 @@ public class PlayerMovement : MonoBehaviour
             _rb.velocity += Vector2.up * Physics2D.gravity.y * (_fallMultiplier - 1) * Time.deltaTime;
         }
     }
-
     private void Die()
     {
         if (_collider2D.IsTouchingLayers(_ememies) || _collider2D.IsTouchingLayers(_hazards))
@@ -147,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
             _rb.AddForce(new Vector2(0f, 350f));
             _animator.SetTrigger(IsDead);
             GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            onDead?.Invoke();
         }
     }
 }

@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 8592230182309439043}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,15 +190,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad053e9672299c489ec4ca63cd3bdb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gunBarrel: {fileID: 3223501894406956937}
+  bullet: {fileID: 7219402250099935408, guid: 48e33364f3398c64f9762e3e51569a35, type: 3}
   _platformLayerMask:
     serializedVersion: 2
     m_Bits: 64
   _ememies:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   _hazards:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4096
   speed: 400
   jumpVel: 13
   maxJumpVel: 20
